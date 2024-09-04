@@ -3,17 +3,17 @@ class Game:
         if isinstance(title, str) and len(title) > 0:
             self._title = title
         else:
-            raise ValueError("Title must be a non-empty string")
+            raise TypeError("Title must be a non-empty string")
         
     @property
     def title(self):
         return self._title
     
     def results(self):
-        return [result for result in Result.results if result.game == self]
+        return [result for result in Result.all if result.game == self]
     
     def players(self):
-        return list(set(result.player for result in self.results()))
+        return list(set([result.player for result in self.results()]))
     
     def average_score(self, player):
         player_results = [result.score for result in self.results() if result.player == player]
@@ -37,7 +37,7 @@ class Player:
             raise ValueError("Username must be a string between 2 and 16 characters")
     
     def results(self):
-        return [result for result in Result.results if result.player == self]
+        return [result for result in Result.all if result.player == self]
     
     def games_played(self):
         return list(set(result.game for result in self.results()))
@@ -49,14 +49,14 @@ class Player:
         return len([result for result in self.results() if result.game == game])
 
 class Result:
-    results = []
+    all = []
     
     def __init__(self, player, game, score):
         if isinstance(player, Player) and isinstance(game, Game) and isinstance(score, int) and 1 <= score <= 5000:
             self._player = player
             self._game = game
             self._score = score
-            Result.results.append(self)
+            Result.all.append(self)
         else:
             raise ValueError("Invalid arguments for Result initialization")
     
